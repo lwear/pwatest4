@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Star Trek Quiz</title>
+	<script src="quizproject.js"></script>
+	<link rel="stylesheet" type="text/css" href="quizproject.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body onLoad="initialize()">
+
+    <div id="lightbox" onclick="closeLightBox()">
+      <div id="message">This is a message</div>
+    </div>
+
+
+    <h2>Star Trek Quiz</h2>
+    <p>Click on the best answer to each question.</p>
+
+    <div class="grid-container">
+      <div class="header">
+        <div id="question">The Question</div>
+      </div>
+      
+      <div class="left">
+        <div>
+        Possible Answers
+         <div class="options" id="a" onclick="markIt('a')">A.</div>
+         <div class="options" id="b" onclick="markIt('b')">B.</div>
+         <div class="options" id="c" onclick="markIt('c')">C.</div>
+         <div class="options" id="d" onclick="markIt('d')">D.</div>
+        </div>
+      </div> 
+
+      
+      <div class="right"> <img id="image" src="" alt=""></div>
+      
+      <div class="footer1">
+        <p>Next Question</p>
+      </div>
+      
+      <div class="footer2">
+        <p id="score">Score</p>
+      </div>
+    </div>
+    
+    
+    <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => {
+            console.log('Service worker registered! ðŸ˜Ž', reg);
+          })
+          .catch(err => {
+            console.log('ðŸ˜¥ Service worker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+
+  <script>
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', event => {
+
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      event.preventDefault();
+
+      // Stash the event so it can be triggered later.
+      deferredPrompt = event;
+
+      // Attach the install prompt to a user gesture
+      document.querySelector('#installBtn').addEventListener('click', event => {
+
+        // Show the prompt
+        deferredPrompt.prompt();
+
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice
+          .then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the A2HS prompt');
+            } else {
+              console.log('User dismissed the A2HS prompt');
+            }
+            deferredPrompt = null;
+          });
+      });
+
+      // Update UI notify the user they can add to home screen
+      document.querySelector('#installBanner').style.display = 'flex';
+    });
+  </script>
+    
+</body>
+</html>
